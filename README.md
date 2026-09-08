@@ -4,6 +4,21 @@
 [![OmniPackage repositories badge aarch64](https://repositories.omnipackage.org/mpz/stable-aarch64/badge.svg)](https://repositories.omnipackage.org/mpz/stable-aarch64/install.html)
 [![Flathub](https://img.shields.io/flathub/v/org.mpz_player.mpz?logo=flathub&label=flathub)](https://flathub.org/apps/org.mpz_player.mpz)
 
+# 🍙 mpz-chiyo-chan — mpz, but Chiyo-chan approved
+
+![Chiyo-chan](assets/chiyo-chan.png)
+
+> *"Hello, I am Chiyo Mihama, I am 10 years old, and this is my favourite music player."* — probably Chiyo
+
+This is a fun fork of [mpz](https://github.com/olegantonyan/mpz) (folder player for big local music collections) with extra goodies:
+
+- 🔍 **Cover art zoom** — mouse wheel zooms 0.2x–4x right in the Album cover dock, double-click resets, right-click → Zoom menu
+- 🎛️ **Nightcore dock** — nightcore.studio-style sliders: Playback Speed 0.50x–2.00x (varispeed, pitch follows speed — real nightcore/slowed, no robot vowels) + Reverb decay + Reset
+
+Chiyo-chan artwork: fan art from konachan.net (Azumanga Daioh © Kiyohiko Azuma). Original mpz © Oleg Antonyan, fork modifications © Janne Alexander Sebastian Rovio — all GPL-3.0-or-later, see `license.txt`. Upstream docs continue below 👇
+
+---
+
 # Folder player for big local music collections
 
 ![image](https://raw.githubusercontent.com/olegantonyan/mpz/gh-pages/images/mpz-workflow.apng)
