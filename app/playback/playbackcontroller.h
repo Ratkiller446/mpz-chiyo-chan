@@ -74,6 +74,8 @@ namespace Playback {
     void setEqualizer(const Eq::EqProfile &profile, bool enabled);
     void setReplayGainResolver(ReplayGainResolver fn);
     void refreshReplayGain();
+    void setNightcoreSpeed(double s);
+    void setNightcoreReverb(double d);
 #endif
 #ifdef ENABLE_DEVICES_MENU
     void setOutputDevice(QByteArray deviceid);

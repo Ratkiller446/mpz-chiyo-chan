@@ -26,6 +26,10 @@
 #include <QFontDatabase>
 #include <QComboBox>
 #include <QAbstractItemView>
+#include <QSlider>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "settings_ui/settingsdialog.h"
 #ifdef ENABLE_GAPLESS
@@ -486,6 +490,48 @@ void MainWindow::setupDockWidgets() {
 
   splitDockWidget(cover_dock, lyrics_dock, Qt::Vertical);
 
+#ifdef ENABLE_GAPLESS
+  nightcore_dock = new QDockWidget(tr("Nightcore"), this);
+  nightcore_dock->setObjectName("nightcoreDock");
+  {
+    auto *w = new QWidget(nightcore_dock);
+    auto *lay = new QVBoxLayout(w);
+    auto *speedLabel = new QLabel(tr("Playback Speed: 1.00"), w);
+    auto *speed = new QSlider(Qt::Horizontal, w);
+    speed->setRange(50, 150);
+    speed->setValue(100);
+    auto *verbLabel = new QLabel(tr("Reverb decay: 0.00"), w);
+    auto *verb = new QSlider(Qt::Horizontal, w);
+    verb->setRange(0, 100);
+    verb->setValue(0);
+    auto *reset = new QPushButton(tr("Reset"), w);
+    lay->addWidget(speedLabel);
+    lay->addWidget(speed);
+    lay->addWidget(verbLabel);
+    lay->addWidget(verb);
+    lay->addWidget(reset);
+    w->setLayout(lay);
+    nightcore_dock->setWidget(w);
+    connect(speed, &QSlider::valueChanged, this, [this, speedLabel](int v) {
+      double s = v / 100.0;
+      speedLabel->setText(tr("Playback Speed: %1").arg(s, 0, 'f', 2));
+      player->setNightcoreSpeed(s);
+    });
+    connect(verb, &QSlider::valueChanged, this, [this, verbLabel](int v) {
+      double d = v / 100.0;
+      verbLabel->setText(tr("Reverb decay: %1").arg(d, 0, 'f', 2));
+      player->setNightcoreReverb(d);
+    });
+    connect(reset, &QPushButton::clicked, this, [speed, verb]() {
+      speed->setValue(100);
+      verb->setValue(0);
+    });
+  }
+  addDockWidget(Qt::RightDockWidgetArea, nightcore_dock);
+  splitDockWidget(lyrics_dock, nightcore_dock, Qt::Vertical);
+  nightcore_dock->hide();
+#endif
+
   // first run: hidden; later, restoreState() restores visibility
   cover_dock->hide();
   lyrics_dock->hide();
@@ -523,7 +569,12 @@ void MainWindow::setupMainMenu() {
   ui->menuButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
   main_menu = new MainMenu(ui->menuButton, global_conf, local_conf, modus_operandi);
-  main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), lock_toolbar_action });
+#ifdef ENABLE_GAPLESS
+  if (nightcore_dock)
+    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), nightcore_dock->toggleViewAction(), lock_toolbar_action });
+  else
+#endif
+    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), lock_toolbar_action });
   connect(main_menu, &MainMenu::exit, this, &MainWindow::requestQuit);
   connect(main_menu, &MainMenu::toggleTrayIcon, this, &MainWindow::setupTrayIcon);
   connect(main_menu, &MainMenu::waveformToggled, player, &Playback::Controller::setWaveformEnabled);

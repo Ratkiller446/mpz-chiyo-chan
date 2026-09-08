@@ -197,6 +197,7 @@ endif()
 
 if (ENABLE_GAPLESS)
   list(APPEND PROJECT_SOURCES
+    app/nightcore/nightcore.cpp
     app/playback/gapless/pcmcache.cpp
     app/playback/gapless/timeline.cpp
     app/playback/gapless/trackdecoder.cpp

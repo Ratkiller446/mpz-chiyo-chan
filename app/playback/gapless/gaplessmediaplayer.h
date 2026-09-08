@@ -31,6 +31,8 @@ namespace Playback::Gapless {
     void setEqualizer(const Eq::EqProfile &profile, bool enabled) override;
     void setReplayGainResolver(ReplayGainResolver fn) override;
     void refreshReplayGain() override;
+    void setNightcoreSpeed(double s) override { engine.setNightcoreSpeed(s); }
+    void setNightcoreReverb(double d) override { engine.setNightcoreReverb(d); }
     void setTrack(const Track &track) override;
     void clearTrack() override;
     void prepareNextTrack(const Track &track) override;

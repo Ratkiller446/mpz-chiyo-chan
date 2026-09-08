@@ -229,6 +229,14 @@ Controller::Controller(const Controls &c, quint32 stream_buffer_size, QByteArray
   }
 
 #ifdef ENABLE_GAPLESS
+  void Controller::setNightcoreSpeed(double s) {
+    _player.setNightcoreSpeed(s);
+  }
+
+  void Controller::setNightcoreReverb(double d) {
+    _player.setNightcoreReverb(d);
+  }
+
   void Controller::setEqualizer(const Eq::EqProfile &profile, bool enabled) {
     player().setEqualizer(profile, enabled);
   }

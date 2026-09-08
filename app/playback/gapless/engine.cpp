@@ -57,7 +57,8 @@ namespace Playback::Gapless {
     const int seg = pos.segment >= 0 ? pos.segment : current_segment;
     const qint64 start = timeline.segmentStartAbs(seg);
     const qint64 rel = start >= 0 ? qMax<qint64>(0, abs - start) : 0;
-    return rel * 1000 / rate;
+    const double spd = nightcore.speed();
+    return qint64(double(rel * 1000) / rate / spd);
   }
 
   void Engine::setTrack(const Track &t) {
@@ -127,6 +128,8 @@ namespace Playback::Gapless {
 
   void Engine::hardSwitchTo(const Track &t) {
     teardownStream();
+    nightcore.reset();
+    last_nightcore_frame = -1;
     resetPreparedState();
     advance_on_eof = false;
     synthetic_playing_on_play = false;
@@ -219,7 +222,10 @@ namespace Playback::Gapless {
     sink_format = format;
     const int rate = format.sampleRate();
     eq.setSampleRate(rate);
+    nightcore.setSampleRate(rate);
+    nightcore.reset();
     last_filtered_frame = -1;
+    last_nightcore_frame = -1;
     const qint64 begin_f = current_track.isCue() ? qint64(current_track.begin()) * rate / 1000 : 0;
     const qint64 end_f = (current_track.isCue() && current_track.duration() > 0)
                              ? begin_f + qint64(current_track.duration()) * rate / 1000
@@ -555,7 +561,9 @@ namespace Playback::Gapless {
     if (rate <= 0 || timeline.segmentCount() == 0) {
       return;
     }
-    const qint64 target_abs = timeline.absoluteForTrackMs(current_segment, ms, rate);
+    nightcore.reset();
+    last_nightcore_frame = -1;
+    const qint64 target_abs = timeline.absoluteForTrackMs(current_segment, qint64(double(ms) * nightcore.speed()), rate);
     if (target_abs < 0) {
       return;
     }
@@ -1046,28 +1054,32 @@ namespace Playback::Gapless {
     if (bpf <= 0) {
       return;
     }
+    const double spd = nightcore.speed();
+    const bool nc = !nightcore.isPassthrough();
     qint64 free_bytes = sink->bytesFree();
     QByteArray chunk;
+    QByteArray nc_out;
     while (free_bytes >= bpf) {
       const Timeline::Pos pos = timeline.map(read_cursor_frame);
       if (pos.segment < 0) {
         break;
       }
-      qint64 want = free_bytes / bpf;
+      qint64 want_out = free_bytes / bpf;
+      qint64 want_in = nc ? qint64(double(want_out) * spd) : want_out;
+      if (want_in < 1) want_in = 1;
       const qint64 seg_end = timeline.segmentEndAbs(pos.segment);
       if (seg_end >= 0) {
         const qint64 room = seg_end - read_cursor_frame;
         if (room <= 0) {
           break;
         }
-        want = qMin(want, room);
+        want_in = qMin(want_in, room);
       }
-      chunk.resize(static_cast<int>(want * bpf));
-      const qint64 got = cache.read(timeline.segmentUrl(pos.segment), pos.track_frame, chunk.data(), want);
+      chunk.resize(static_cast<int>(want_in * bpf));
+      const qint64 got = cache.read(timeline.segmentUrl(pos.segment), pos.track_frame, chunk.data(), want_in);
       if (got <= 0) {
         break;
       }
-      // Not current_track: it follows the audible clock, a sink buffer behind.
       eq.setExtraGainDb(timeline.segmentGainDb(pos.segment));
       if (!eq.isPassthrough()) {
         if (read_cursor_frame != last_filtered_frame) {
@@ -1076,13 +1088,34 @@ namespace Playback::Gapless {
         applyEq(chunk.data(), got);
         last_filtered_frame = read_cursor_frame + got;
       }
-      const qint64 wrote = sink_io->write(chunk.constData(), got * bpf);
+      if (!nc) {
+        last_nightcore_frame = read_cursor_frame + got;
+        const qint64 wrote = sink_io->write(chunk.constData(), got * bpf);
+        if (wrote <= 0) {
+          break;
+        }
+        read_cursor_frame += wrote / bpf;
+        free_bytes -= wrote;
+        if (wrote < got * bpf) {
+          break;
+        }
+        continue;
+      }
+      if (read_cursor_frame != last_nightcore_frame) {
+        nightcore.reset();
+      }
+      const qint64 out_frames = nightcore.processChunk(chunk.constData(), got, sink_format, nc_out);
+      last_nightcore_frame = read_cursor_frame + got;
+      read_cursor_frame += got;
+      if (out_frames <= 0 || nc_out.isEmpty()) {
+        continue;
+      }
+      const qint64 wrote = sink_io->write(nc_out.constData(), nc_out.size());
       if (wrote <= 0) {
         break;
       }
-      read_cursor_frame += wrote / bpf;
       free_bytes -= wrote;
-      if (wrote < got * bpf) {
+      if (wrote < nc_out.size()) {
         break;
       }
     }
@@ -1306,7 +1339,8 @@ namespace Playback::Gapless {
     if (rate <= 0) {
       return epoch_start_frame;
     }
-    qint64 abs = epoch_start_frame + sink->processedUSecs() * qint64(rate) / 1000000;
+    const double spd = nightcore.speed();
+    qint64 abs = epoch_start_frame + qint64(double(sink->processedUSecs()) * rate * spd / 1000000);
     if (abs > read_cursor_frame) {
       abs = read_cursor_frame;
     }

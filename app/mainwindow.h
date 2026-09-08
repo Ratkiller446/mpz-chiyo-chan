@@ -154,6 +154,7 @@ private:
   QAction *lock_toolbar_action = nullptr;
   QDockWidget *cover_dock = nullptr;
   QDockWidget *lyrics_dock = nullptr;
+  QDockWidget *nightcore_dock = nullptr;
   CoverArt::Widget *cover_widget = nullptr;
   Lyrics::Widget *lyrics_widget = nullptr;
   ModusOperandi modus_operandi;

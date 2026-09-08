@@ -67,6 +67,8 @@ namespace Playback {
     virtual void setEqualizer(const Eq::EqProfile &profile, bool enabled) { Q_UNUSED(profile) Q_UNUSED(enabled) }
     virtual void setReplayGainResolver(ReplayGainResolver fn) { Q_UNUSED(fn) }
     virtual void refreshReplayGain() { }
+    virtual void setNightcoreSpeed(double s) { Q_UNUSED(s) }
+    virtual void setNightcoreReverb(double d) { Q_UNUSED(d) }
 #endif
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     virtual void setOutputDevice(QByteArray deviceid);

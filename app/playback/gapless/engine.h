@@ -6,6 +6,7 @@
 #include "playback/gapless/timeline.h"
 #include "playback/gapless/trackdecoder.h"
 #include "playback/mediaplayer.h"
+#include "nightcore/nightcore.h"
 #include "eq/equalizer.h"
 #include "eq/eqprofile.h"
 #include "streammetadata.h"
@@ -52,6 +53,9 @@ namespace Playback::Gapless {
     void setEqualizer(const Eq::EqProfile &profile, bool enabled);
     void prepareNextTrack(const Track &t);
     void setOutputDevice(QByteArray id);
+    void setNightcoreSpeed(double s) { nightcore.setSpeed(s); }
+    void setNightcoreReverb(double d) { nightcore.setReverbDecay(d); }
+    double nightcoreSpeed() const { return nightcore.speed(); }
 
   signals:
     void positionChanged(qint64 track_relative_ms);
@@ -156,6 +160,8 @@ namespace Playback::Gapless {
     qint64 prepared_total_frames = 0;
     int volume_pct = 100;
     Eq::Equalizer eq;
+    Nightcore::Processor nightcore;
+    qint64 last_nightcore_frame = -1;
     std::function<double(const Track &)> rg_resolver;
     qint64 last_filtered_frame = -1; // abs frame the EQ state is contiguous with; mismatch => reset on seek
     QByteArray output_device_id;
