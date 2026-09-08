@@ -10,12 +10,54 @@
 
 > *"Hello, I am Chiyo Mihama, I am 10 years old, and this is my favourite music player."* — probably Chiyo
 
-This is a fun fork of [mpz](https://github.com/olegantonyan/mpz) (folder player for big local music collections) with extra goodies:
+This is a fun fork of [mpz](https://github.com/olegantonyan/mpz) (folder player for big local music collections) with extra goodies. Everything below the line is upstream docs; everything Chiyo-flavoured is up here. 🍙
 
-- 🔍 **Cover art zoom** — mouse wheel zooms 0.2x–4x right in the Album cover dock, double-click resets, right-click → Zoom menu
-- 🎛️ **Nightcore dock** — nightcore.studio-style sliders: Playback Speed 0.50x–2.00x (varispeed, pitch follows speed — real nightcore/slowed, no robot vowels) + Reverb decay + Reset
+## ✨ What makes this fork special
 
-Chiyo-chan artwork: fan art from konachan.net (Azumanga Daioh © Kiyohiko Azuma). Original mpz © Oleg Antonyan, fork modifications © Janne Alexander Sebastian Rovio — all GPL-3.0-or-later, see `license.txt`. Upstream docs continue below 👇
+### 🔍 Cover art that actually grows
+
+Upstream's Album cover dock shows your art at a fixed size — dragging the panel around just moves it. Here:
+
+- **Mouse wheel over the cover** zooms 0.2x–4x, and the dock window itself expands with the image (no more zoomed pixmap clipped inside a tiny label)
+- **Double-click** resets to fit, **right-click → Zoom** gives Fit / 100% / 200%
+- The dock now defaults to a proper 300px square instead of a thin strip, so covers look good out of the box
+
+### 🎛️ Nightcore dock (nightcore.studio, but local)
+
+A new dock next to Album cover / Lyrics with two sliders, styled after [nightcore.studio](https://nightcore.studio/):
+
+| Slider | Range | What it does |
+|---|---|---|
+| Playback Speed | 0.50x–2.00x | Varispeed resampling — pitch follows speed, like a real nightcore/slowed edit. 1.25x = chipmunk energy, 0.80x = deep slowed vibe |
+| Reverb decay | 0.00–1.00 | Freeverb-style tail mixed under the track. 0 = dry, small values = room, high values = cave |
+| Reset | — | Back to 1.00x + dry in one click |
+
+Deliberately **not** time-stretch: no robot vowels, no elongated consonants. What you hear is what slowing the tape would sound like. The DSP lives in the gapless engine (`app/nightcore/`), runs after the EQ on every PCM chunk, and position/seek stay correct at any speed. Session-global, local files only — radio/MPD paths are untouched.
+
+### 🛡️ Bluetooth disconnect survival
+
+The Flatpak 2.1.6 release crashes with `SIGSEGV` in `QAudioContext` when a Bluetooth headset disconnects mid-playback (PipeWire yanks the sink out from under Qt). This fork tracks upstream `master`, which already handles `QMediaDevices::audioOutputsChanged` gracefully — re-pinning the default sink and nudging the pipeline instead of dying.
+
+## 🔨 Building (the safe way)
+
+Full Qt builds eat RAM for breakfast (12 parallel compilers once OOM-killed the maintainer's entire Cinnamon session — true story). Build inside the KDE SDK, single-threaded:
+
+```bash
+flatpak run --user --filesystem=home --command=bash org.kde.Sdk//6.11 -c \
+  "cd ~/mpz-chiyo-chan && cmake -B build-sdk -DCMAKE_BUILD_TYPE=Release \
+   -DENABLE_UPDATE_CHECK=OFF -DENABLE_QHOTKEY=OFF \
+   && nice -n 19 cmake --build build-sdk --parallel 1"
+./build-sdk/mpz
+```
+
+Takes ~10–15 min on a 6-core box, peaks at ~1G RAM instead of ~13G. See [CONTRIBUTING.md](CONTRIBUTING.md) for the AI-agent commit rules (kernel-style `Assisted-by` trailers, humans own the `Signed-off-by`).
+
+## 📜 Credits & license
+
+- Chiyo-chan artwork: fan art from konachan.net (Azumanga Daioh © Kiyohiko Azuma)
+- Original mpz © Oleg Antonyan and contributors
+- Fork modifications © Janne Alexander Sebastian Rovio
+- All GPL-3.0-or-later, see `license.txt`. Upstream docs continue below 👇
 
 ---
 
