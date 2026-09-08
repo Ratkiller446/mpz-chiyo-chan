@@ -52,6 +52,20 @@ flatpak run --user --filesystem=home --command=bash org.kde.Sdk//6.11 -c \
 
 Takes ~10–15 min on a 6-core box, peaks at ~1G RAM instead of ~13G. See [CONTRIBUTING.md](CONTRIBUTING.md) for the AI-agent commit rules (kernel-style `Assisted-by` trailers, humans own the `Signed-off-by`).
 
+## 🚧 More to come (Chiyo's wishlist)
+
+Chiyo-chan has plans. Big, organized, colour-coded plans:
+
+- 🖼️ **Cute images, your way** — set any picture you like as the cover dock's placeholder (no more ugly gray "No cover art" rectangle, Chiyo would be horrified), plus tiny animated decorations and stars around the currently playing track
+- 🍳 **Recipe panel** — "Currently listening: this song / Today's lunch: ome-rice!" with recipe cards, and a "Songs to Listen to While Cooking" playlist
+- 🧹 **Make Everything Pretty mode** — one click to fix metadata, sort albums, kill duplicates, normalize capitalization. *"Ahh... everything is so neat!"*
+- 🐶 **Tadakichi mode** — a little Tadakichi beside the player that reacts to playback: playing 😊, paused 😐, finished 💤
+- 📚 **Study mode** — minimal UI, no animations, volume normalization, session timer
+- ⭐ **Favorites that are actually organized** — homework songs, cooking songs, "songs Osaka-san recommended"
+- 🎨 **Custom themes** — sakura, sky-blue, soft pastel, summer vacation
+
+Each one lands as its own small commit when it's ready. Nothing half-baked gets merged.
+
 ## 📜 Credits & license
 
 - Chiyo-chan artwork: fan art from konachan.net (Azumanga Daioh © Kiyohiko Azuma)
