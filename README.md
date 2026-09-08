@@ -4,11 +4,11 @@
 [![OmniPackage repositories badge aarch64](https://repositories.omnipackage.org/mpz/stable-aarch64/badge.svg)](https://repositories.omnipackage.org/mpz/stable-aarch64/install.html)
 [![Flathub](https://img.shields.io/flathub/v/org.mpz_player.mpz?logo=flathub&label=flathub)](https://flathub.org/apps/org.mpz_player.mpz)
 
-# 🍙 mpz-chiyo-chan — mpz, but Chiyo-chan approved
+# 🍙 mpz-chiyo-chan - mpz, but Chiyo-chan approved
 
 ![Chiyo-chan](assets/chiyo-chan.png)
 
-> *"Hello, I am Chiyo Mihama, I am 10 years old, and this is my favourite music player."* — probably Chiyo
+> *"Hello, I am Chiyo Mihama, I am 10 years old, and this is my favourite music player."* - probably Chiyo
 
 This is a fun fork of [mpz](https://github.com/olegantonyan/mpz) (folder player for big local music collections) with extra goodies. Everything below the line is upstream docs; everything Chiyo-flavoured is up here. 🍙
 
@@ -16,9 +16,9 @@ This is a fun fork of [mpz](https://github.com/olegantonyan/mpz) (folder player 
 
 ### 🔍 Cover art that actually grows
 
-Upstream's Album cover dock shows your art at a fixed size — dragging the panel around just moves it. Here:
+Upstream's Album cover dock shows your art at a fixed size - dragging the panel around just moves it. Here:
 
-- **Mouse wheel over the cover** zooms 0.2x–4x, and the dock window itself expands with the image (no more zoomed pixmap clipped inside a tiny label)
+- **Mouse wheel over the cover** zooms 0.2x-4x, and the dock window itself expands with the image (no more zoomed pixmap clipped inside a tiny label)
 - **Double-click** resets to fit, **right-click → Zoom** gives Fit / 100% / 200%
 - The dock now defaults to a proper 300px square instead of a thin strip, so covers look good out of the box
 
@@ -28,19 +28,19 @@ A new dock next to Album cover / Lyrics with two sliders, styled after [nightcor
 
 | Slider | Range | What it does |
 |---|---|---|
-| Playback Speed | 0.50x–2.00x | Varispeed resampling — pitch follows speed, like a real nightcore/slowed edit. 1.25x = chipmunk energy, 0.80x = deep slowed vibe |
-| Reverb decay | 0.00–1.00 | Freeverb-style tail mixed under the track. 0 = dry, small values = room, high values = cave |
-| Reset | — | Back to 1.00x + dry in one click |
+| Playback Speed | 0.50x-2.00x | Varispeed resampling - pitch follows speed, like a real nightcore/slowed edit. 1.25x = chipmunk energy, 0.80x = deep slowed vibe |
+| Reverb decay | 0.00-1.00 | Freeverb-style tail mixed under the track. 0 = dry, small values = room, high values = cave |
+| Reset | - | Back to 1.00x + dry in one click |
 
-Deliberately **not** time-stretch: no robot vowels, no elongated consonants. What you hear is what slowing the tape would sound like. The DSP lives in the gapless engine (`app/nightcore/`), runs after the EQ on every PCM chunk, and position/seek stay correct at any speed. Session-global, local files only — radio/MPD paths are untouched.
+Deliberately **not** time-stretch: no robot vowels, no elongated consonants. What you hear is what slowing the tape would sound like. The DSP lives in the gapless engine (`app/nightcore/`), runs after the EQ on every PCM chunk, and position/seek stay correct at any speed. Session-global, local files only - radio/MPD paths are untouched.
 
 ### 🛡️ Bluetooth disconnect survival
 
-The Flatpak 2.1.6 release crashes with `SIGSEGV` in `QAudioContext` when a Bluetooth headset disconnects mid-playback (PipeWire yanks the sink out from under Qt). This fork tracks upstream `master`, which already handles `QMediaDevices::audioOutputsChanged` gracefully — re-pinning the default sink and nudging the pipeline instead of dying.
+The Flatpak 2.1.6 release crashes with `SIGSEGV` in `QAudioContext` when a Bluetooth headset disconnects mid-playback (PipeWire yanks the sink out from under Qt). This fork tracks upstream `master`, which already handles `QMediaDevices::audioOutputsChanged` gracefully - re-pinning the default sink and nudging the pipeline instead of dying.
 
 ## 🔨 Building (the safe way)
 
-Full Qt builds eat RAM for breakfast (12 parallel compilers once OOM-killed the maintainer's entire Cinnamon session — true story). Build inside the KDE SDK, single-threaded:
+Full Qt builds eat RAM for breakfast (12 parallel compilers once OOM-killed the maintainer's entire Cinnamon session - true story). Build inside the KDE SDK, single-threaded:
 
 ```bash
 flatpak run --user --filesystem=home --command=bash org.kde.Sdk//6.11 -c \
@@ -50,19 +50,19 @@ flatpak run --user --filesystem=home --command=bash org.kde.Sdk//6.11 -c \
 ./build-sdk/mpz
 ```
 
-Takes ~10–15 min on a 6-core box, peaks at ~1G RAM instead of ~13G. See [CONTRIBUTING.md](CONTRIBUTING.md) for the AI-agent commit rules (kernel-style `Assisted-by` trailers, humans own the `Signed-off-by`).
+Takes ~10-15 min on a 6-core box, peaks at ~1G RAM instead of ~13G. See [CONTRIBUTING.md](CONTRIBUTING.md) for the AI-agent commit rules (kernel-style `Assisted-by` trailers, humans own the `Signed-off-by`).
 
 ## 🚧 More to come (Chiyo's wishlist)
 
 Chiyo-chan has plans. Big, organized, colour-coded plans:
 
-- 🖼️ **Cute images, your way** — set any picture you like as the cover dock's placeholder (no more ugly gray "No cover art" rectangle, Chiyo would be horrified), plus tiny animated decorations and stars around the currently playing track
-- 🍳 **Recipe panel** — "Currently listening: this song / Today's lunch: ome-rice!" with recipe cards, and a "Songs to Listen to While Cooking" playlist
-- 🧹 **Make Everything Pretty mode** — one click to fix metadata, sort albums, kill duplicates, normalize capitalization. *"Ahh... everything is so neat!"*
-- 🐶 **Tadakichi mode** — a little Tadakichi beside the player that reacts to playback: playing 😊, paused 😐, finished 💤
-- 📚 **Study mode** — minimal UI, no animations, volume normalization, session timer
-- ⭐ **Favorites that are actually organized** — homework songs, cooking songs, "songs Osaka-san recommended"
-- 🎨 **Custom themes** — sakura, sky-blue, soft pastel, summer vacation
+- 🖼️ **Cute images, your way** - set any picture you like as the cover dock's placeholder (no more ugly gray "No cover art" rectangle, Chiyo would be horrified), plus tiny animated decorations and stars around the currently playing track
+- 🍳 **Recipe panel** - "Currently listening: this song / Today's lunch: ome-rice!" with recipe cards, and a "Songs to Listen to While Cooking" playlist
+- 🧹 **Make Everything Pretty mode** - one click to fix metadata, sort albums, kill duplicates, normalize capitalization. *"Ahh... everything is so neat!"*
+- 🐶 **Tadakichi mode** - a little Tadakichi beside the player that reacts to playback: playing 😊, paused 😐, finished 💤
+- 📚 **Study mode** - minimal UI, no animations, volume normalization, session timer
+- ⭐ **Favorites that are actually organized** - homework songs, cooking songs, "songs Osaka-san recommended"
+- 🎨 **Custom themes** - sakura, sky-blue, soft pastel, summer vacation
 
 Each one lands as its own small commit when it's ready. Nothing half-baked gets merged.
 
@@ -83,7 +83,7 @@ If you like organizing your music in folders, then this player might be for you.
 
 More screenshots here: https://mpz-player.org
 
-This player is an attempt to create the "perfect" player for the author. It doesn't try to be groundbreaking — it just gets the job done. The main feature is the 3-column UI and the way you manage playlists. Choose library folders, middle-click on a folder, and a playlist will be created from it.
+This player is an attempt to create the "perfect" player for the author. It doesn't try to be groundbreaking - it just gets the job done. The main feature is the 3-column UI and the way you manage playlists. Choose library folders, middle-click on a folder, and a playlist will be created from it.
 
 Why "big local collections"? "Local" as opposed to streaming services (which are fine, but this player's goal is playing music you have on your hard drive); "big" means the collection is large enough that managing it becomes hard. Internet radio streaming is also supported.
 
@@ -190,7 +190,7 @@ After dragging `mpz music player.app` to `/Applications`, use either method belo
 xattr -dr com.apple.quarantine "/Applications/mpz music player.app"
 ```
 
-**System Settings:** try to open `mpz music player.app` once and dismiss the warning, then go to *System Settings → Privacy & Security*. Near the bottom you'll see a message that mpz was blocked — click *Open Anyway* and confirm.
+**System Settings:** try to open `mpz music player.app` once and dismiss the warning, then go to *System Settings → Privacy & Security*. Near the bottom you'll see a message that mpz was blocked - click *Open Anyway* and confirm.
 
 The app will then launch normally.
 
@@ -246,7 +246,7 @@ The available config options are:
 
 - `inhibit_sleep_while_playing` in `global.yml` - when `true` the player will prevent your OS from sleeping automatically while playing (on Linux requires `systemd-inhibit`)
 - `stream_buffer_size` in `global.yml` - minimum stream buffer size in bytes. The default is 128KB
-- `single_instance` in `global.yml` - when `true` the player will reuse a single instance — launching another instance with files as command-line arguments will send these files to the running instance as a new playlist
+- `single_instance` in `global.yml` - when `true` the player will reuse a single instance - launching another instance with files as command-line arguments will send these files to the running instance as a new playlist
 - `playback_log_size` in `global.yml` - max size of playback log, default is 100
 - `columns_config` in `global.yml` - configure columns in the playlist section, more on this below
 - `show_playlist_headers` in `global.yml` - when `true` the playlist shows column headers. Default is `false`

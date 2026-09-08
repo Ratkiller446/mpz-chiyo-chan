@@ -1,6 +1,6 @@
 # Contributing to mpz-chiyo-chan
 
-Chiyo-chan accepts contributions from humans and AI agents alike. But there are rules — the Linux Kernel rules.
+Chiyo-chan accepts contributions from humans and AI agents alike. But there are rules - the Linux Kernel rules.
 
 ## AI agents: read this first (mandatory)
 
