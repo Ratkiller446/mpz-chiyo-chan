@@ -7,15 +7,20 @@
 #include <QPixmap>
 #include <QString>
 
+namespace Config {
+  class Global;
+}
+
 namespace CoverArt {
   class Widget : public QLabel {
     Q_OBJECT
   public:
-    explicit Widget(QWidget *parent = nullptr);
+    explicit Widget(Config::Global &conf, QWidget *parent = nullptr);
 
   public slots:
     void setTrack(const Track &track);
     void clear();
+    void setPlaceholder(const QString &path);
 
   signals:
     void trackInfoRequested(const Track &track);
@@ -35,11 +40,14 @@ namespace CoverArt {
   private:
     void render();
     void render_cover();
+    bool render_placeholder();
     bool isCurrent(const QString &artist, const QString &album) const;
 
     QPixmap source;
+    QPixmap placeholder;
     Track _track;
     QString _cover_path;
+    Config::Global &_conf;
     double _zoom = 1.0; // ponytail: wheel zoom, double-click resets; clamp 0.2-4x
   };
 }

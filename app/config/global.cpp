@@ -264,6 +264,14 @@ namespace Config {
     return saveProvidersUnder("covers", arg);
   }
 
+  QString Global::coverPlaceholder() const {
+    return storage.get("cover_placeholder").get<QString>();
+  }
+
+  void Global::saveCoverPlaceholder(const QString &arg) {
+    storage.set("cover_placeholder", Config::Value(arg));
+  }
+
   // Online providers only, and there are no defaults: anything missing or malformed is simply "no online providers". Built-in sources are not
   // configurable and never appear here. Legacy entries naming them are returned as-is and dropped downstream by ProviderChain::filterKnown.
   QStringList Global::providersUnder(const QString &key) const {

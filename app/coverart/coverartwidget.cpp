@@ -12,9 +12,12 @@
 #include <QUrl>
 #include <QFont>
 #include <QPalette>
+#include <QFileDialog>
+
+#include "config/global.h"
 
 namespace CoverArt {
-  Widget::Widget(QWidget *parent) : QLabel(parent) {
+  Widget::Widget(Config::Global &conf, QWidget *parent) : QLabel(parent), _conf(conf) {
     setAlignment(Qt::AlignCenter);
     setWordWrap(true);
     setMinimumSize(200, 200);
@@ -32,7 +35,19 @@ namespace CoverArt {
     connect(&downloader, &Online::Downloader::searchStarted, this, &Widget::onSearchStarted);
     connect(&downloader, &Online::Downloader::coverAvailable, this, &Widget::onCoverDownloaded);
     connect(&downloader, &Online::Downloader::searchFinished, this, &Widget::onSearchFinished);
+    setPlaceholder(_conf.coverPlaceholder());
     clear();
+  }
+
+  void Widget::setPlaceholder(const QString &path) {
+    placeholder = QPixmap(path);
+    if (source.isNull()) {
+      if (_track.isValid()) {
+        render_cover();
+      } else {
+        clear();
+      }
+    }
   }
 
   void Widget::setTrack(const Track &track) {
@@ -70,6 +85,9 @@ namespace CoverArt {
       _cover_path.clear();
       source = QPixmap();
       _zoom = 1.0;
+      if (render_placeholder()) {
+        return;
+      }
       // request() may not have run yet, so ask rather than assume.
       const bool searching = Online::Downloader::instance().isSearching(_track.artist(), _track.album());
       setText(searching ? tr("Searching cover art...") : tr("No cover art"));
@@ -86,15 +104,41 @@ namespace CoverArt {
     _cover_path.clear();
     source = QPixmap();
     _zoom = 1.0;
+    if (render_placeholder()) {
+      return;
+    }
     setText(tr("Nothing playing"));
   }
 
   void Widget::showContextMenu(const QPoint &pos) {
+    QMenu menu(this);
+
+    QAction setPh(tr("Set placeholder image..."), &menu);
+    connect(&setPh, &QAction::triggered, this, [this]() {
+      const QString path = QFileDialog::getOpenFileName(this, tr("Choose placeholder image"), QString(), tr("Images (*.png *.jpg *.jpeg *.bmp *.gif *.webp)"));
+      if (!path.isEmpty()) {
+        setPlaceholder(path);
+        _conf.saveCoverPlaceholder(path);
+        _conf.sync();
+      }
+    });
+
+    QAction clearPh(tr("Clear placeholder"), &menu);
+    clearPh.setEnabled(!placeholder.isNull());
+    connect(&clearPh, &QAction::triggered, this, [this]() {
+      setPlaceholder(QString());
+      _conf.saveCoverPlaceholder(QString());
+      _conf.sync();
+    });
+
+    menu.addAction(&setPh);
+    menu.addAction(&clearPh);
+    menu.addSeparator();
+
     if (!_track.isValid()) {
+      menu.exec(mapToGlobal(pos));
       return;
     }
-
-    QMenu menu(this);
 
     QAction viewer(tr("Open in external viewer"), &menu);
     viewer.setIcon(Icons::get(Icons::Icon::FolderReveal));
@@ -131,7 +175,7 @@ namespace CoverArt {
   }
 
   void Widget::wheelEvent(QWheelEvent *event) {
-    if (source.isNull()) {
+    if (source.isNull() && placeholder.isNull()) {
       QLabel::wheelEvent(event);
       return;
     }
@@ -143,7 +187,7 @@ namespace CoverArt {
   }
 
   void Widget::mouseDoubleClickEvent(QMouseEvent *event) {
-    if (!source.isNull() && event->button() == Qt::LeftButton) {
+    if ((!source.isNull() || !placeholder.isNull()) && event->button() == Qt::LeftButton) {
       _zoom = 1.0;
       updateGeometry();
       render();
@@ -154,8 +198,9 @@ namespace CoverArt {
   }
 
   QSize Widget::sizeHint() const {
-    if (source.isNull()) return QSize(300, 300);
-    QSize base = source.size(); // ponytail: 300px base, zoom scales dock
+    const QPixmap &pm = source.isNull() ? placeholder : source;
+    if (pm.isNull()) return QSize(300, 300);
+    QSize base = pm.size(); // ponytail: 300px base, zoom scales dock
     base = base.scaled(300, 300, Qt::KeepAspectRatio);
     int s = int(300 * _zoom);
     return QSize(s, s);
@@ -166,10 +211,19 @@ namespace CoverArt {
   }
 
   void Widget::render() {
-    if (source.isNull()) {
+    const QPixmap &pm = source.isNull() ? placeholder : source;
+    if (pm.isNull()) {
       return;
     }
     const int s = int(300 * _zoom);
-    setPixmap(source.scaled(QSize(s, s), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    setPixmap(pm.scaled(QSize(s, s), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+  }
+
+  bool Widget::render_placeholder() {
+    if (placeholder.isNull()) {
+      return false;
+    }
+    render();
+    return true;
   }
 }

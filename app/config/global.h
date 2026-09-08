@@ -88,6 +88,9 @@ namespace Config {
     QStringList coverProviders() const;
     bool saveCoverProviders(const QStringList &arg);
 
+    QString coverPlaceholder() const;
+    void saveCoverPlaceholder(const QString &arg);
+
     QString libraryFilterScope() const;
     void saveLibraryFilterScope(const QString &arg);
 

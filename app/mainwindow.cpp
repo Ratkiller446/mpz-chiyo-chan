@@ -477,7 +477,7 @@ QMenu *MainWindow::createPopupMenu() {
 void MainWindow::setupDockWidgets() {
   setDockNestingEnabled(true);
 
-  cover_widget = new CoverArt::Widget(this);
+  cover_widget = new CoverArt::Widget(global_conf, this);
   cover_dock = new QDockWidget(tr("Album cover"), this);
   cover_dock->setObjectName("coverArtDock");
   auto *cover_scroll = new QScrollArea(cover_dock);
