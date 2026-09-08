@@ -10,7 +10,7 @@ namespace Nightcore {
   }
 
   void Processor::setSpeed(double s) {
-    speed_ = std::clamp(s, 0.5, 1.5);
+    speed_ = std::clamp(s, 0.5, 2.0);
   }
 
   void Processor::setReverbDecay(double d) {

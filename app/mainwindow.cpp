@@ -498,7 +498,7 @@ void MainWindow::setupDockWidgets() {
     auto *lay = new QVBoxLayout(w);
     auto *speedLabel = new QLabel(tr("Playback Speed: 1.00"), w);
     auto *speed = new QSlider(Qt::Horizontal, w);
-    speed->setRange(50, 150);
+    speed->setRange(50, 200);
     speed->setValue(100);
     auto *verbLabel = new QLabel(tr("Reverb decay: 0.00"), w);
     auto *verb = new QSlider(Qt::Horizontal, w);
