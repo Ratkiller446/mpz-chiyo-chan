@@ -18,14 +18,15 @@ Chiyo-chan has plans. Big, organized, colour-coded plans.
       sessions, restore after. Normalization = volume dim for now (real
       ReplayGain forcing needs a scan pass — later).
 
-## Later (ChatGPT wishlist, in order)
+## Done (roadmap batch)
 
-- [ ] **Recipe panel** — bundled static recipe cards (ome-rice first, obviously)
-      + "now listening" header. No network, just cute local data.
-- [ ] **Custom themes** — sakura / sky-blue / soft pastel / summer vacation
-      palette switcher for the docks.
-- [ ] **Make Everything Pretty mode** — one-click metadata fix, duplicate
-      removal, capitalization normalization (needs dry-run preview first).
+- [x] **Recipe panel** — 4 bundled static cards (ome-rice first, obviously)
+      + "cooking to" header following playback. No network, just cute local data.
+- [x] **Custom themes** — Default / Sakura / Sky-blue / Soft pastel /
+      Summer vacation palette switcher, persisted in `global.yml`.
+- [x] **Make Everything Pretty mode v1** — duplicate finder with checkbox
+      preview + apply (playlist-level). Tag normalization needs tag writes,
+      parked for v2.
 - [ ] **Custom AI art integration** — user-supplied mascot pics (DJ-flag
       concept pending human review) wired into docks like Tadakichi.
 - [ ] **Favorites that are actually organized** — homework / cooking /

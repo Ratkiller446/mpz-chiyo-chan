@@ -21,6 +21,7 @@ void MainMenu::on_open() {
   QAction settings(tr("Settings…"));
   QAction equalizer(tr("Equalizer…"));
   QAction replaygain(tr("ReplayGain…"));
+  QAction pretty(tr("Make Everything Pretty…"));
   QAction lpog(tr("Playback log"));
   QAction about(tr("About mpz"));
   QAction quit(tr("Quit"));
@@ -43,6 +44,7 @@ void MainMenu::on_open() {
     FeedbackForm(local_conf).exec();
   });
   connect(&shortcuts, &QAction::triggered, this, &MainMenu::openShortcuts);
+  connect(&pretty, &QAction::triggered, this, &MainMenu::openPretty);
 #ifdef ENABLE_GAPLESS
   connect(&equalizer, &QAction::triggered, this, &MainMenu::openEqualizer);
   connect(&replaygain, &QAction::triggered, this, &MainMenu::openReplayGain);
@@ -54,6 +56,7 @@ void MainMenu::on_open() {
 #endif
 
   menu.addAction(&settings);
+  menu.addAction(&pretty);
 #ifdef ENABLE_GAPLESS
   menu.addAction(&equalizer);
   menu.addAction(&replaygain);

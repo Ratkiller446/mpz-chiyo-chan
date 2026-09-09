@@ -26,6 +26,7 @@ signals:
   void openShortcuts();
   void openEqualizer();
   void openReplayGain();
+  void openPretty();
 
 public slots:
   void on_open();

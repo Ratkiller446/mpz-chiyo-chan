@@ -403,4 +403,12 @@ namespace Config {
     return storage.set("shortcuts", Config::Value(map));
   }
 
+  QString Global::theme() const {
+    return storage.get("theme").get<QString>();
+  }
+
+  void Global::saveTheme(const QString &arg) {
+    storage.set("theme", Config::Value(arg));
+  }
+
 }

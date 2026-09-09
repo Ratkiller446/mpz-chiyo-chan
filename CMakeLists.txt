@@ -158,6 +158,9 @@ set(PROJECT_SOURCES
   app/streammetadata.cpp
   app/tadakichi/tadakichiwidget.cpp
   app/study/studywidget.cpp
+  app/recipes/recipewidget.cpp
+  app/themes/themes.cpp
+  app/pretty/prettydialog.cpp
   app/modusoperandi.cpp
   app/about_ui/aboutdialog.ui
   app/directory_ui/directorysettings.ui

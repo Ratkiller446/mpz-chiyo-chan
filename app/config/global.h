@@ -115,6 +115,9 @@ namespace Config {
     QMap<QString, QString> shortcuts() const;
     bool saveShortcuts(const QMap<QString, QString> &arg);
 
+    QString theme() const;
+    void saveTheme(const QString &arg);
+
   private:
     QStringList providersUnder(const QString &key) const;
     bool saveProvidersUnder(const QString &key, const QStringList &arg);

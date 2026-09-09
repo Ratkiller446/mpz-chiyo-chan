@@ -32,6 +32,9 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 
+#include "themes/themes.h"
+#include "pretty/prettydialog.h"
+#include <QMessageBox>
 #include "settings_ui/settingsdialog.h"
 #ifdef ENABLE_GAPLESS
   #include "equalizer_ui/equalizerdialog.h"
@@ -591,6 +594,36 @@ void MainWindow::setupDockWidgets() {
 #endif
     study_widget->setup(distractions, player);
   }
+
+  recipes_widget = new Recipes::Widget(this);
+  recipes_dock = new QDockWidget(tr("Recipes"), this);
+  recipes_dock->setObjectName("recipesDock");
+  recipes_dock->setWidget(recipes_widget);
+  addDockWidget(Qt::RightDockWidgetArea, recipes_dock);
+  splitDockWidget(study_dock, recipes_dock, Qt::Vertical);
+  recipes_dock->hide();
+
+  connect(player, &Playback::Controller::started, recipes_widget, &Recipes::Widget::onStarted);
+  connect(player, &Playback::Controller::stopped, recipes_widget, &Recipes::Widget::onStopped);
+
+  themes_dock = new QDockWidget(tr("Themes"), this);
+  themes_dock->setObjectName("themesDock");
+  {
+    auto *combo = new QComboBox(themes_dock);
+    combo->addItems(Themes::names());
+    const int idx = combo->findText(global_conf.theme());
+    combo->setCurrentIndex(idx >= 0 ? idx : 0);
+    themes_dock->setWidget(combo);
+    connect(combo, &QComboBox::currentTextChanged, this, [this](const QString &name) {
+      Themes::apply(name);
+      global_conf.saveTheme(name);
+      global_conf.sync();
+    });
+  }
+  addDockWidget(Qt::RightDockWidgetArea, themes_dock);
+  splitDockWidget(recipes_dock, themes_dock, Qt::Vertical);
+  themes_dock->hide();
+  Themes::apply(global_conf.theme());
 }
 
 void MainWindow::openTrackInfo(const Track &track) {
@@ -608,13 +641,14 @@ void MainWindow::setupMainMenu() {
   main_menu = new MainMenu(ui->menuButton, global_conf, local_conf, modus_operandi);
 #ifdef ENABLE_GAPLESS
   if (nightcore_dock)
-    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), nightcore_dock->toggleViewAction(), tadakichi_dock->toggleViewAction(), study_dock->toggleViewAction(), lock_toolbar_action });
+    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), nightcore_dock->toggleViewAction(), tadakichi_dock->toggleViewAction(), study_dock->toggleViewAction(), recipes_dock->toggleViewAction(), themes_dock->toggleViewAction(), lock_toolbar_action });
   else
 #endif
-    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), tadakichi_dock->toggleViewAction(), study_dock->toggleViewAction(), lock_toolbar_action });
+    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), tadakichi_dock->toggleViewAction(), study_dock->toggleViewAction(), recipes_dock->toggleViewAction(), themes_dock->toggleViewAction(), lock_toolbar_action });
   connect(main_menu, &MainMenu::exit, this, &MainWindow::requestQuit);
   connect(main_menu, &MainMenu::toggleTrayIcon, this, &MainWindow::setupTrayIcon);
   connect(main_menu, &MainMenu::waveformToggled, player, &Playback::Controller::setWaveformEnabled);
+  connect(main_menu, &MainMenu::openPretty, this, &MainWindow::openPrettyDialog);
 }
 
 void MainWindow::setupTrayIcon() {
@@ -1057,6 +1091,29 @@ void MainWindow::applyEqForDevice(const QByteArray &device_id) {
   player->setEqualizer(chosen, settings.enabled);
 }
 #endif
+
+void MainWindow::openPrettyDialog() {
+  const quint64 trackUid = dispatch->state().selectedTrack();
+  auto pl = playlists->playlistByTrackUid(trackUid);
+  if (pl == nullptr) {
+    QMessageBox::information(this, tr("Make Everything Pretty"),
+                             tr("Select a playlist first, then Chiyo will tidy it."));
+    return;
+  }
+  const quint64 uid = pl->uid();
+  const QString name = pl->name();
+  auto *dlg = new Pretty::Dialog(name, playlist->currentTracks(),
+                                 [this, uid](const QVector<Track> &dups) {
+                                   playlist->on_removeTracks(uid, dups);
+                                 },
+                                 this);
+  dlg->setAttribute(Qt::WA_DeleteOnClose);
+  dlg->setModal(false);
+  dlg->setWindowIcon(windowIcon());
+  dlg->show();
+  dlg->raise();
+  dlg->activateWindow();
+}
 
 #ifdef ENABLE_MPD_SUPPORT
 void MainWindow::setupMpdOrder() {
