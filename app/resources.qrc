@@ -13,9 +13,9 @@
         <file alias="app/resources/icons/dock/mpz-base.png">resources/icons/dock/mpz-base.png</file>
         <file alias="app/resources/icons/dock/mpz-dots.png">resources/icons/dock/mpz-dots.png</file>
         <file alias="app/resources/radio/radio.json">resources/radio/radio.json</file>
-        <file alias="app/resources/tadakichi/playing.jpg">../../assets/tadakichi-playing.jpg</file>
-        <file alias="app/resources/tadakichi/paused.gif">../../assets/tadakichi-paused.gif</file>
-        <file alias="app/resources/tadakichi/stopped.gif">../../assets/tadakichi-stopped.gif</file>
+        <file alias="app/resources/tadakichi/playing.jpg">../assets/tadakichi-playing.jpg</file>
+        <file alias="app/resources/tadakichi/paused.gif">../assets/tadakichi-paused.gif</file>
+        <file alias="app/resources/tadakichi/stopped.gif">../assets/tadakichi-stopped.gif</file>
         <file alias="app/resources/translations/sr.qm">resources/translations/sr.qm</file>
         <file alias="app/resources/translations/ja.qm">resources/translations/ja.qm</file>
    </qresource>
