@@ -36,6 +36,7 @@ namespace Tadakichi {
     }
     if (res.endsWith(QStringLiteral(".gif"))) {
       movie = new QMovie(res, QByteArray(), this);
+      movie->setScaledSize(QSize(220, 140));
       pic->setMovie(movie);
       movie->start();
       return;
