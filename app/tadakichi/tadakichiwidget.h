@@ -5,6 +5,7 @@
 
 #include <QLabel>
 #include <QMovie>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -25,6 +26,9 @@ namespace Tadakichi {
     QLabel *pic = nullptr;
     QLabel *label = nullptr;
     QMovie *movie = nullptr;
+    QTimer *bounceTimer = nullptr;
+    QPixmap bounceBase;
+    int bounceTick = 0;
   };
 }
 

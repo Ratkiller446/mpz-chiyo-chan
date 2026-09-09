@@ -12,11 +12,27 @@ namespace Tadakichi {
     lay->addWidget(pic);
     lay->addWidget(label);
     setLayout(lay);
+    bounceTimer = new QTimer(this);
+    bounceTimer->setInterval(140);
+    connect(bounceTimer, &QTimer::timeout, this, [this]() {
+      if (bounceBase.isNull()) {
+        return;
+      }
+      bounceTick++;
+      const int s = (bounceTick % 2 == 0) ? 220 : 234;
+      pic->setPixmap(bounceBase.scaled(QSize(s, s), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    });
     onStopped();
   }
 
   void Widget::onStarted(const Track &) {
     setMood(QStringLiteral(":/app/resources/tadakichi/playing.jpg"), tr("Tadakichi is vibing"));
+    QPixmap pm(QStringLiteral(":/app/resources/tadakichi/playing.jpg"));
+    if (!pm.isNull()) {
+      bounceBase = pm;
+      bounceTick = 0;
+      bounceTimer->start();
+    }
   }
 
   void Widget::onPaused(const Track &) {
@@ -29,6 +45,8 @@ namespace Tadakichi {
 
   void Widget::setMood(const QString &res, const QString &text) {
     label->setText(text);
+    bounceTimer->stop();
+    bounceBase = QPixmap();
     if (movie) {
       movie->stop();
       movie->deleteLater();
