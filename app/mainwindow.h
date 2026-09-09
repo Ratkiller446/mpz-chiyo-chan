@@ -28,6 +28,7 @@
 #include "slidingbanner.h"
 #include "coverart/coverartwidget.h"
 #include "lyrics/lyricswidget.h"
+#include "tadakichi/tadakichiwidget.h"
 
 #include <QAction>
 #include <QDockWidget>
@@ -155,8 +156,10 @@ private:
   QDockWidget *cover_dock = nullptr;
   QDockWidget *lyrics_dock = nullptr;
   QDockWidget *nightcore_dock = nullptr;
+  QDockWidget *tadakichi_dock = nullptr;
   CoverArt::Widget *cover_widget = nullptr;
   Lyrics::Widget *lyrics_widget = nullptr;
+  Tadakichi::Widget *tadakichi_widget = nullptr;
   ModusOperandi modus_operandi;
 #ifdef ENABLE_MPD_SUPPORT
   Playback::Mpd::PlaybackOrder *mpd_order = nullptr;

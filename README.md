@@ -59,7 +59,7 @@ Chiyo-chan has plans. Big, organized, colour-coded plans:
 - 🖼️ **Cute images, your way** - set any picture you like as the cover dock's placeholder (no more ugly gray "No cover art" rectangle, Chiyo would be horrified), plus tiny animated decorations and stars around the currently playing track
 - 🍳 **Recipe panel** - "Currently listening: this song / Today's lunch: ome-rice!" with recipe cards, and a "Songs to Listen to While Cooking" playlist
 - 🧹 **Make Everything Pretty mode** - one click to fix metadata, sort albums, kill duplicates, normalize capitalization. *"Ahh... everything is so neat!"*
-- 🐶 **Tadakichi mode** - a little Tadakichi beside the player that reacts to playback: playing 😊, paused 😐, finished 💤
+- 🐶 **Tadakichi mode** (done!) - a little Tadakichi dock beside the player that reacts to playback: vibing on play, waiting on pause, napping on stop
 - 📚 **Study mode** - minimal UI, no animations, volume normalization, session timer
 - ⭐ **Favorites that are actually organized** - homework songs, cooking songs, "songs Osaka-san recommended"
 - 🎨 **Custom themes** - sakura, sky-blue, soft pastel, summer vacation

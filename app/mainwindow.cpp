@@ -558,6 +558,22 @@ void MainWindow::setupDockWidgets() {
 
   connect(cover_widget, &CoverArt::Widget::trackInfoRequested, this, &MainWindow::openTrackInfo);
   connect(lyrics_widget, &Lyrics::Widget::trackInfoRequested, this, &MainWindow::openTrackInfo);
+
+  tadakichi_widget = new Tadakichi::Widget(this);
+  tadakichi_dock = new QDockWidget(tr("Tadakichi"), this);
+  tadakichi_dock->setObjectName("tadakichiDock");
+  tadakichi_dock->setWidget(tadakichi_widget);
+  addDockWidget(Qt::RightDockWidgetArea, tadakichi_dock);
+  splitDockWidget(
+#ifdef ENABLE_GAPLESS
+    nightcore_dock ? nightcore_dock :
+#endif
+    lyrics_dock, tadakichi_dock, Qt::Vertical);
+  tadakichi_dock->hide();
+
+  connect(player, &Playback::Controller::started, tadakichi_widget, &Tadakichi::Widget::onStarted);
+  connect(player, &Playback::Controller::paused, tadakichi_widget, &Tadakichi::Widget::onPaused);
+  connect(player, &Playback::Controller::stopped, tadakichi_widget, &Tadakichi::Widget::onStopped);
 }
 
 void MainWindow::openTrackInfo(const Track &track) {
@@ -575,10 +591,10 @@ void MainWindow::setupMainMenu() {
   main_menu = new MainMenu(ui->menuButton, global_conf, local_conf, modus_operandi);
 #ifdef ENABLE_GAPLESS
   if (nightcore_dock)
-    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), nightcore_dock->toggleViewAction(), lock_toolbar_action });
+    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), nightcore_dock->toggleViewAction(), tadakichi_dock->toggleViewAction(), lock_toolbar_action });
   else
 #endif
-    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), lock_toolbar_action });
+    main_menu->setViewActions({ cover_dock->toggleViewAction(), lyrics_dock->toggleViewAction(), tadakichi_dock->toggleViewAction(), lock_toolbar_action });
   connect(main_menu, &MainMenu::exit, this, &MainWindow::requestQuit);
   connect(main_menu, &MainMenu::toggleTrayIcon, this, &MainWindow::setupTrayIcon);
   connect(main_menu, &MainMenu::waveformToggled, player, &Playback::Controller::setWaveformEnabled);
