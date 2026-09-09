@@ -26,21 +26,29 @@ namespace Tadakichi {
   }
 
   void Widget::onStarted(const Track &) {
-    setMood(QStringLiteral(":/app/resources/tadakichi/playing.jpg"), tr("Tadakichi is vibing"));
+    setMood(QStringLiteral(":/app/resources/tadakichi/playing.jpg"), tr("☆ Tadakichi is vibing ☆"));
     QPixmap pm(QStringLiteral(":/app/resources/tadakichi/playing.jpg"));
     if (!pm.isNull()) {
       bounceBase = pm;
       bounceTick = 0;
+      bounceTimer->setInterval(int(140.0 / tempo_));
       bounceTimer->start();
     }
   }
 
+  void Widget::setTempo(double speed) {
+    tempo_ = qBound(0.5, speed, 2.0);
+    if (bounceTimer->isActive()) {
+      bounceTimer->setInterval(int(140.0 / tempo_));
+    }
+  }
+
   void Widget::onPaused(const Track &) {
-    setMood(QStringLiteral(":/app/resources/tadakichi/paused.gif"), tr("Tadakichi waits..."));
+    setMood(QStringLiteral(":/app/resources/tadakichi/paused.gif"), tr("☆ Tadakichi waits... ☆"));
   }
 
   void Widget::onStopped() {
-    setMood(QStringLiteral(":/app/resources/tadakichi/stopped.gif"), tr("Tadakichi is napping..."));
+    setMood(QStringLiteral(":/app/resources/tadakichi/stopped.gif"), tr("☆ Tadakichi is napping... ☆"));
   }
 
   void Widget::setMood(const QString &res, const QString &text) {

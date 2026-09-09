@@ -498,7 +498,7 @@ void MainWindow::setupDockWidgets() {
   splitDockWidget(cover_dock, lyrics_dock, Qt::Vertical);
 
 #ifdef ENABLE_GAPLESS
-  nightcore_dock = new QDockWidget(tr("Nightcore"), this);
+  nightcore_dock = new QDockWidget(tr("\u2605 Nightcore"), this);
   nightcore_dock->setObjectName("nightcoreDock");
   {
     auto *w = new QWidget(nightcore_dock);
@@ -523,6 +523,9 @@ void MainWindow::setupDockWidgets() {
       double s = v / 100.0;
       speedLabel->setText(tr("Playback Speed: %1").arg(s, 0, 'f', 2));
       player->setNightcoreSpeed(s);
+      if (tadakichi_widget) {
+        tadakichi_widget->setTempo(s);
+      }
     });
     connect(verb, &QSlider::valueChanged, this, [this, verbLabel](int v) {
       double d = v / 100.0;
@@ -563,7 +566,7 @@ void MainWindow::setupDockWidgets() {
   connect(lyrics_widget, &Lyrics::Widget::trackInfoRequested, this, &MainWindow::openTrackInfo);
 
   tadakichi_widget = new Tadakichi::Widget(this);
-  tadakichi_dock = new QDockWidget(tr("Tadakichi"), this);
+  tadakichi_dock = new QDockWidget(tr("\U0001F436 Tadakichi"), this);
   tadakichi_dock->setObjectName("tadakichiDock");
   tadakichi_dock->setWidget(tadakichi_widget);
   addDockWidget(Qt::RightDockWidgetArea, tadakichi_dock);
@@ -579,7 +582,7 @@ void MainWindow::setupDockWidgets() {
   connect(player, &Playback::Controller::stopped, tadakichi_widget, &Tadakichi::Widget::onStopped);
 
   study_widget = new Study::Widget(this);
-  study_dock = new QDockWidget(tr("Study"), this);
+  study_dock = new QDockWidget(tr("\U0001F4DA Study"), this);
   study_dock->setObjectName("studyDock");
   study_dock->setWidget(study_widget);
   addDockWidget(Qt::RightDockWidgetArea, study_dock);
@@ -596,7 +599,7 @@ void MainWindow::setupDockWidgets() {
   }
 
   recipes_widget = new Recipes::Widget(this);
-  recipes_dock = new QDockWidget(tr("Recipes"), this);
+  recipes_dock = new QDockWidget(tr("\U0001F371 Recipes"), this);
   recipes_dock->setObjectName("recipesDock");
   recipes_dock->setWidget(recipes_widget);
   addDockWidget(Qt::RightDockWidgetArea, recipes_dock);
@@ -606,7 +609,7 @@ void MainWindow::setupDockWidgets() {
   connect(player, &Playback::Controller::started, recipes_widget, &Recipes::Widget::onStarted);
   connect(player, &Playback::Controller::stopped, recipes_widget, &Recipes::Widget::onStopped);
 
-  themes_dock = new QDockWidget(tr("Themes"), this);
+  themes_dock = new QDockWidget(tr("\U0001F3A8 Themes"), this);
   themes_dock->setObjectName("themesDock");
   {
     auto *combo = new QComboBox(themes_dock);

@@ -19,6 +19,7 @@ namespace Tadakichi {
     void onStarted(const Track &track);
     void onPaused(const Track &track);
     void onStopped();
+    void setTempo(double speed);
 
   private:
     void setMood(const QString &res, const QString &text);
@@ -29,6 +30,7 @@ namespace Tadakichi {
     QTimer *bounceTimer = nullptr;
     QPixmap bounceBase;
     int bounceTick = 0;
+    double tempo_ = 1.0;
   };
 }
 
