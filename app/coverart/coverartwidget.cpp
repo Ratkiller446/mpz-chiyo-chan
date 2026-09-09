@@ -84,7 +84,6 @@ namespace CoverArt {
     if (path.isEmpty() || cover.isNull()) {
       _cover_path.clear();
       source = QPixmap();
-      _zoom = 1.0;
       if (render_placeholder()) {
         return;
       }
@@ -95,7 +94,6 @@ namespace CoverArt {
     }
     _cover_path = path;
     source = cover;
-    _zoom = 1.0;
     render();
   }
 
