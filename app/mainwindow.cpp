@@ -85,6 +85,7 @@ MainWindow::MainWindow(const QStringList &args, IPC::Instance *instance, Config:
   QIcon app_icon;
   for (const QString &size : {"16x16", "22x22", "24x24", "32x32", "48x48", "64x64", "256x256"})
     app_icon.addFile(":/app/resources/icons/" + size + "/mpz.png");
+  app_icon.addFile(":/app/resources/icons/chiyo-chan.png");
   setWindowIcon(app_icon);
 
   tasks = new BackgroundTasks(this);
@@ -1110,6 +1111,11 @@ void MainWindow::openPrettyDialog() {
                                    playlist->on_removeTracks(uid, dups);
                                  },
                                  this);
+  connect(dlg, &Pretty::Dialog::tagsSaved, this, [pl](const QList<quint64> &uids) {
+    for (auto u : uids) {
+      pl->reloadTrack(u);
+    }
+  });
   dlg->setAttribute(Qt::WA_DeleteOnClose);
   dlg->setModal(false);
   dlg->setWindowIcon(windowIcon());

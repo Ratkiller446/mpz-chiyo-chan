@@ -1,0 +1,36 @@
+id: io.github.Ratkiller446.mpz-chiyo-chan
+runtime: org.kde.Platform
+runtime-version: '6.11'
+sdk: org.kde.Sdk
+command: mpz
+
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  - --socket=pulseaudio
+  - --filesystem=xdg-run/pipewire-0
+  - --share=network
+  - --talk-name=org.freedesktop.FileManager1
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --filesystem=home
+  - --filesystem=/mnt
+  - --filesystem=/media
+  - --filesystem=/run/media
+
+modules:
+  - name: mpz-chiyo-chan
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_UPDATE_CHECK=OFF
+      - -DENABLE_QHOTKEY=OFF
+      - -DMPRIS_SERVICE_SUFFIX=io.github.Ratkiller446.mpz-chiyo-chan
+    sources:
+      - type: dir
+        path: ..
+
+# safe build: limit jobs, this machine OOMs on full parallel
+# flatpak run --user org.flatpak.Builder --user --install --force-clean --jobs=1 build-chiyo flatpak/io.github.Ratkiller446.mpz-chiyo-chan.yml
+# flatpak run io.github.Ratkiller446.mpz-chiyo-chan
