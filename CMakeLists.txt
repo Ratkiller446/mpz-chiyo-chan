@@ -157,6 +157,7 @@ set(PROJECT_SOURCES
   app/playback/stream.cpp
   app/streammetadata.cpp
   app/tadakichi/tadakichiwidget.cpp
+  app/study/studywidget.cpp
   app/modusoperandi.cpp
   app/about_ui/aboutdialog.ui
   app/directory_ui/directorysettings.ui
