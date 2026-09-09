@@ -37,6 +37,15 @@ namespace Tadakichi {
     if (res.endsWith(QStringLiteral(".gif"))) {
       movie = new QMovie(res, QByteArray(), this);
       movie->setScaledSize(QSize(220, 140));
+      if (!movie->isValid()) {
+        QPixmap fallback(res);
+        movie->deleteLater();
+        movie = nullptr;
+        if (!fallback.isNull()) {
+          pic->setPixmap(fallback.scaled(QSize(220, 220), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        }
+        return;
+      }
       pic->setMovie(movie);
       movie->start();
       return;
