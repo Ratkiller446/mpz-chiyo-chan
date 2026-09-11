@@ -53,6 +53,8 @@ void TestNightcore::clampsSpeedAndDecay() {
   QCOMPARE(p.reverbDecay(), 0.0);
   p.setReverbDecay(2.0);
   QCOMPARE(p.reverbDecay(), 1.0);
+  p.setSpeed(1.0);
+  p.setReverbDecay(0.0);
   QVERIFY(p.isPassthrough());
   p.setSpeed(1.5);
   QVERIFY(!p.isPassthrough());
@@ -129,20 +131,23 @@ void TestNightcore::wetReverbStaysBounded() {
 }
 
 void TestNightcore::resetClearsReverbTail() {
+  // Signal must exceed the longest comb delay (~1356 frames at 44100Hz),
+  // otherwise the wet tail never emerges and wet trivially equals dry.
+  constexpr int frames = 4096;
   Processor p;
   p.setSampleRate(44100);
   p.setReverbDecay(1.0);
-  const auto in = sineFrames(1024, 2);
+  const auto in = sineFrames(frames, 2);
   QByteArray wet, dry;
-  p.processChunk(reinterpret_cast<const char *>(in.data()), 1024, floatStereo44100(), wet);
+  p.processChunk(reinterpret_cast<const char *>(in.data()), frames, floatStereo44100(), wet);
   p.reset();
   p.setReverbDecay(0.0);
-  p.processChunk(reinterpret_cast<const char *>(in.data()), 1024, floatStereo44100(), dry);
+  p.processChunk(reinterpret_cast<const char *>(in.data()), frames, floatStereo44100(), dry);
   QCOMPARE(wet.size(), dry.size());
   const auto *w = reinterpret_cast<const float *>(wet.constData());
   const auto *d = reinterpret_cast<const float *>(dry.constData());
   bool differs = false;
-  for (int i = 0; i < 1024 * 2; i++) {
+  for (int i = 0; i < frames * 2; i++) {
     if (w[i] != d[i]) {
       differs = true;
       break;
