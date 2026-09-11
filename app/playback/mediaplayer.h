@@ -69,6 +69,7 @@ namespace Playback {
     virtual void refreshReplayGain() { }
     virtual void setNightcoreSpeed(double s) { Q_UNUSED(s) }
     virtual void setNightcoreReverb(double d) { Q_UNUSED(d) }
+    virtual double nightcoreSpeed() const { return 1.0; }
 #endif
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     virtual void setOutputDevice(QByteArray deviceid);

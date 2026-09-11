@@ -76,6 +76,7 @@ namespace Playback {
     void refreshReplayGain();
     void setNightcoreSpeed(double s);
     void setNightcoreReverb(double d);
+    double nightcoreSpeed() const;
 #endif
 #ifdef ENABLE_DEVICES_MENU
     void setOutputDevice(QByteArray deviceid);
@@ -85,6 +86,7 @@ namespace Playback {
     void setWaveformEnabled(bool enabled);
 
   private:
+    void updateSeekbarMaximum();
     void on_seek(int position);
     void updateWaveform(const Track &track);
     QString time_text(quint64 pos) const;

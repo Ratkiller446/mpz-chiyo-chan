@@ -33,6 +33,7 @@ namespace Playback::Gapless {
     void refreshReplayGain() override;
     void setNightcoreSpeed(double s) override { engine.setNightcoreSpeed(s); }
     void setNightcoreReverb(double d) override { engine.setNightcoreReverb(d); }
+    double nightcoreSpeed() const override { return engine.nightcoreSpeed(); }
     void setTrack(const Track &track) override;
     void clearTrack() override;
     void prepareNextTrack(const Track &track) override;
