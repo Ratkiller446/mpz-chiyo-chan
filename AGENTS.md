@@ -52,10 +52,16 @@ Branches: `master` (upstream mirror), `ponytail-fixes` (chiyo-chan, default),
   must be Janne; if `git log` shows any other author, stop and fix it first.
 - Keep diffs minimal. No new deps without discussion. GPL-3.0-or-later only.
 
-## Playback-speed invariants (nightcore)
+## Playback-speed invariants (nightcore) — learned from the jumping-cursor bug
 
-- The seekbar shows OUTPUT time. Anything converting track time must divide by
-  speed: positionMs, seekbar maximum (`duration / speed`), seek targets.
+- SINGLE input-frame clock: `read_cursor_frame` only moves forward, so speed
+  changes can never make the position jump. positionMs, seekbar maximum (FULL
+  duration, never scaled), and seek targets all stay in file frames. The cursor
+  naturally sweeps faster at higher speed because input is consumed faster.
+- NEVER reinterpret sink history by current speed (`processedUSecs * speed`
+  makes the cursor jump on every slider move and mixes domains in the UI).
+- `audibleAbsFrame()` = read_cursor minus sink-buffered output converted at
+  current speed. Error stays under one buffer. Epoch math is for seeks, not speed.
 - First click on an INACTIVE window must never start playback — it only
   activates the window. Swallow the activation click (timestamp approach).
 

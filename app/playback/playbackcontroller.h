@@ -76,7 +76,6 @@ namespace Playback {
     void refreshReplayGain();
     void setNightcoreSpeed(double s);
     void setNightcoreReverb(double d);
-    double nightcoreSpeed() const;
 #endif
 #ifdef ENABLE_DEVICES_MENU
     void setOutputDevice(QByteArray deviceid);

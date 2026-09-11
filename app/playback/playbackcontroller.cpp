@@ -238,17 +238,12 @@ Controller::Controller(const Controls &c, quint32 stream_buffer_size, QByteArray
     updateSeekbarMaximum();
   }
 
-  double Controller::nightcoreSpeed() const {
-    return _player.nightcoreSpeed();
-  }
-
   void Controller::updateSeekbarMaximum() {
     if (_current_track.isStream() || _current_track.duration() == 0) {
       _controls.seekbar->setMaximum(std::numeric_limits<int>::max());
       return;
     }
-    const double spd = nightcoreSpeed();
-    _controls.seekbar->setMaximum(static_cast<int>(_current_track.duration() / 1000 / (spd > 0 ? spd : 1.0)));
+    _controls.seekbar->setMaximum(static_cast<int>(_current_track.duration() / 1000));
   }
 
   void Controller::setNightcoreReverb(double d) {

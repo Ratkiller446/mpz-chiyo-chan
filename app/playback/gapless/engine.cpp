@@ -57,8 +57,7 @@ namespace Playback::Gapless {
     const int seg = pos.segment >= 0 ? pos.segment : current_segment;
     const qint64 start = timeline.segmentStartAbs(seg);
     const qint64 rel = start >= 0 ? qMax<qint64>(0, abs - start) : 0;
-    const double spd = nightcore.speed();
-    return qint64(double(rel * 1000) / rate / spd);
+    return rel * 1000 / rate;
   }
 
   void Engine::setTrack(const Track &t) {
@@ -563,7 +562,7 @@ namespace Playback::Gapless {
     }
     nightcore.reset();
     last_nightcore_frame = -1;
-    const qint64 target_abs = timeline.absoluteForTrackMs(current_segment, qint64(double(ms) * nightcore.speed()), rate);
+    const qint64 target_abs = timeline.absoluteForTrackMs(current_segment, ms, rate);
     if (target_abs < 0) {
       return;
     }
@@ -1335,14 +1334,23 @@ namespace Playback::Gapless {
     if (!sink) {
       return read_cursor_frame;
     }
-    const int rate = sink_format.sampleRate();
-    if (rate <= 0) {
-      return epoch_start_frame;
+    // Single input-frame clock: read_cursor only moves forward, so speed
+    // changes can never make the position jump. Subtract what the sink still
+    // holds (converted at current speed); the error is under one buffer.
+    const int bpf = sink_format.bytesPerFrame();
+    qint64 buffered_out = 0;
+    if (bpf > 0) {
+      const qint64 buffered_bytes = sink->bufferSize() - sink->bytesFree();
+      if (buffered_bytes > 0) {
+        buffered_out = buffered_bytes / bpf;
+      }
     }
-    const double spd = nightcore.speed();
-    qint64 abs = epoch_start_frame + qint64(double(sink->processedUSecs()) * rate * spd / 1000000);
+    const qint64 abs = read_cursor_frame - qint64(double(buffered_out) * nightcore.speed());
+    if (abs < 0) {
+      return 0;
+    }
     if (abs > read_cursor_frame) {
-      abs = read_cursor_frame;
+      return read_cursor_frame;
     }
     return abs;
   }
