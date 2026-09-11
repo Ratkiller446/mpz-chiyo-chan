@@ -19,6 +19,9 @@ namespace Pretty {
     QString newValue;
   };
 
+  QString groupKey(const Track &t);
+  QString tidied(const QString &s);
+
   class Dialog : public QDialog {
     Q_OBJECT
   public:
@@ -33,8 +36,6 @@ namespace Pretty {
     void apply();
 
   private:
-    static QString tidied(const QString &s);
-
     QListWidget *dupeList = nullptr;
     QListWidget *tidyList = nullptr;
     QPushButton *applyButton = nullptr;

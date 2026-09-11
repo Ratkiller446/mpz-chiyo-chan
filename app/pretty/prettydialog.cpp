@@ -19,7 +19,13 @@ namespace Pretty {
     }
   }
 
-  QString Dialog::tidied(const QString &s) {
+  QString groupKey(const Track &t) {
+    return t.artist().trimmed().toLower() + QStringLiteral("\x1f") +
+           t.album().trimmed().toLower() + QStringLiteral("\x1f") +
+           t.title().trimmed().toLower();
+  }
+
+  QString tidied(const QString &s) {
     return s.simplified();
   }
 
@@ -31,10 +37,7 @@ namespace Pretty {
 
     QMap<QString, QVector<Track>> groups;
     for (const auto &t : tracks) {
-      const QString key = t.artist().trimmed().toLower() + QStringLiteral("\x1f") +
-                          t.album().trimmed().toLower() + QStringLiteral("\x1f") +
-                          t.title().trimmed().toLower();
-      groups[key] << t;
+      groups[groupKey(t)] << t;
     }
     for (auto it = groups.cbegin(); it != groups.cend(); ++it) {
       if (it.value().size() > 1) {
